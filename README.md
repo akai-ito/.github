@@ -4,7 +4,7 @@
 
 | File | What it is |
 | --- | --- |
-| [map.md](map.md) | The design map: how Ito fits together, why, and what comes next |
+| [map.md](map.md) | The design map: how Ito fits together, and why |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How we build; it applies to every repository in the organisation |
 | [profile/README.md](profile/README.md) | The [organisation page](https://github.com/akai-ito) |
 | [.github/workflows](.github/workflows) | Checks that run here and that every repository reuses |

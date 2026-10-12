@@ -8,7 +8,7 @@ instance, and Ito is built for technical people who are comfortable hosting a sm
 
 > [!NOTE]
 > Ito is being designed in the open, and nothing is ready to install yet. The
-> [map](https://github.com/akai-ito/.github/blob/main/map.md) has the design and the plan.
+> [map](https://github.com/akai-ito/.github/blob/main/map.md) has the design.
 
 ## Repositories
 

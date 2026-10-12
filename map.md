@@ -1,8 +1,8 @@
 # Ito — map
 
 > The design map for Ito, a personal agent you run yourself, and Ari, its iPhone app.
-> **Status: designing — nothing is built yet.** Every decision carries its reason; open questions
-> are at the end. The [organisation page](https://github.com/akai-ito) explains what Ito is and why.
+> **Status: designing — nothing is built yet.** Every decision carries its reason. The
+> [organisation page](https://github.com/akai-ito) explains what Ito is and why.
 
 ## Words
 
@@ -59,8 +59,8 @@ Each part can change without touching the others.
   renderer, and Telegram is a small bridge that speaks the same API. The API is versioned and
   published as a spec, because one app release must talk to servers of different versions. Minor
   versions only add, and clients ignore what they don't recognise, so an older app keeps working;
-  on a major mismatch, the app says which side to update. The details settle with the slice 1
-  protocol.
+  on a major mismatch, the app says which side to update. The details settle when the protocol
+  is first written.
 - **Harness seam, for the model engine.** The agent loop talks to a small interface it owns: start
   or resume a session, run a turn and receive Ito's own events, steer (add input to a running
   turn), interrupt. Codex is the only implementation, because it already provides the agent
@@ -79,7 +79,7 @@ Each part can change without touching the others.
 
 | Repo | Holds |
 | --- | --- |
-| `.github` | The project: this map, slice storyboards, the organisation page, the contribution guide, shared CI |
+| `.github` | The project: this map, the organisation page, the contribution guide, shared CI |
 | `ito-core` | Agent loop, client API, the published protocol spec, API docs on GitHub Pages |
 | `ito-capabilities` | One package per capability: operations, MCP tools, `ito` commands, skills |
 | `ari-ios` | The SwiftUI app (iOS 26) |
@@ -99,7 +99,7 @@ Each part can change without touching the others.
 
 ## Product defaults
 
-Starting points from earlier design work; each is revisited when a slice touches it.
+Starting points from earlier design work; each is revisited when the work reaches it.
 
 - **One continuous conversation**, so nothing is ever in the wrong chat.
 - **The agent decides** whether to answer inline or work in the background, because you shouldn't
@@ -139,32 +139,3 @@ Starting points from earlier design work; each is revisited when a slice touches
   standing "allow always". Reporting problems in Ito itself is the one exception (above).
 - **Pull requests from agents**, for now. Issues are enough to learn from real use.
 - **One instance serving several people.** Each person's data, keys and agent stay theirs.
-
-## Slices
-
-Each slice ships server and app together, so every step can be used and judged end to end. It
-starts with a storyboard of moments (what you see, what you feel, what must never happen), and the
-protocol is derived from it. Early slices are small and closely shaped; later ones grow once the
-core has earned trust.
-
-| Slice | Delivers | Status |
-| --- | --- | --- |
-| 1 | **Live feel**: smooth streaming, Markdown, live status, an instant Stop. **Never lose a message**: send while the agent is busy, resume after any disconnect, retries that never duplicate. No Thread yet; the conversation itself persists. | Next: storyboard |
-| 2 | The Thread capability; photos, files and voice notes; push notifications | — |
-| 3+ | Background work and Activity · Goals and Library · more capabilities · Telegram bridge · local models · install and pairing for others | — |
-
-## Open questions
-
-- **Packaging and install:** an npm package, a Docker image or both; macOS or Linux first.
-- **Push for other people:** while people build Ari themselves, each builder needs a paid Apple
-  developer account to receive pushes; from TestFlight on, only the publisher can sign pushes, so
-  the project needs a small relay.
-- **Pairing a phone with a server:** QR code, token, or both.
-- **The approval experience:** how a consequential operation asks you. Leaning towards one general
-  "ask" (a question with options, approve or decline being one case) that also covers clarifying
-  questions.
-- **Local models:** which background work runs locally, decided with evals, and what the tiers are
-  called.
-- **The Telegram bridge:** its scope.
-- **Outside contributions:** a contributor agreement before accepting code, so commercial licensing
-  stays possible.
