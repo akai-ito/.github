@@ -1,0 +1,30 @@
+#!/bin/sh
+# Runs the shared commit-msg hook over every commit that a push or pull request adds.
+
+set -eu
+
+base="$1"
+head="$2"
+hook="$(cd "$(dirname "$0")/../.." && pwd)/.githooks/commit-msg"
+message=$(mktemp)
+trap 'rm -f "$message"' EXIT
+status=0
+
+if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+  commits=$(git rev-list --no-merges --reverse "$head")
+else
+  commits=$(git rev-list --no-merges --reverse "$base..$head")
+fi
+
+for commit in $commits; do
+  git log -1 --format=%B "$commit" > "$message"
+  summary=$(git log -1 --format='%h %s' "$commit")
+  if CHECK_LABEL=$(git log -1 --format=%h "$commit") "$hook" "$message"; then
+    printf 'ok    %s\n' "$summary"
+  else
+    printf 'FAIL  %s\n' "$summary"
+    status=1
+  fi
+done
+
+exit "$status"

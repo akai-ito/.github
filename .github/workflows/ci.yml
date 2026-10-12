@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  commit-messages:
+    name: Commit messages
+    uses: ./.github/workflows/commit-messages.yml
+
+  docs:
+    name: Docs
+    uses: ./.github/workflows/docs.yml
+
+  workflows:
+    name: Workflows and scripts
+    uses: ./.github/workflows/workflows.yml
+
+  diagrams:
+    name: Diagrams render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Render every Mermaid diagram
+        run: |
+          chrome=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          if [ -z "$chrome" ]; then
+            echo "::error title=No browser::Rendering diagrams needs Chrome on the runner, and none was found."
+            exit 1
+          fi
+          echo '{"args": ["--no-sandbox"]}' > "$RUNNER_TEMP/puppeteer.json"
+          grep -rl --include='*.md' '^```mermaid' . | sort > "$RUNNER_TEMP/diagram-files"
+          status=0
+          while IFS= read -r file; do
+            if PUPPETEER_EXECUTABLE_PATH="$chrome" PUPPETEER_SKIP_DOWNLOAD=true \
+                npx --yes @mermaid-js/mermaid-cli@12.0.0 --puppeteerConfigFile "$RUNNER_TEMP/puppeteer.json" \
+                --input "$file" --output "$RUNNER_TEMP/$(basename "$file")"; then
+              echo "ok    $file"
+            else
+              echo "::error file=$file,title=Diagram does not render::A Mermaid block in $file has a syntax error; GitHub would show it as a broken diagram."
+              status=1
+            fi
+          done < "$RUNNER_TEMP/diagram-files"
+          exit "$status"

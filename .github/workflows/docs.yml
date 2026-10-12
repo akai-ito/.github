@@ -1,0 +1,60 @@
+name: Docs
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  SHARED: ${{ github.repository == 'akai-ito/.github' && '.' || '.shared' }}
+
+jobs:
+  markdown:
+    name: Markdown style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.SHARED == '.shared'
+        with:
+          repository: akai-ito/.github
+          ref: main
+          path: .shared
+      - uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff # v24.2.0
+        with:
+          config: ${{ env.SHARED }}/.github/linters/.markdownlint-cli2.yaml
+          globs: '**/*.md'
+
+  links:
+    name: Links resolve
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.SHARED == '.shared'
+        with:
+          repository: akai-ito/.github
+          ref: main
+          path: .shared
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --config ${{ env.SHARED }}/.github/linters/lychee.toml --no-progress '**/*.md'
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  spelling:
+    name: Spelling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.SHARED == '.shared'
+        with:
+          repository: akai-ito/.github
+          ref: main
+          path: .shared
+      - uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
+        with:
+          config: ${{ env.SHARED }}/.github/linters/typos.toml

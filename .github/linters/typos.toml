@@ -1,0 +1,5 @@
+[files]
+extend-exclude = [".shared", "LICENSES", "node_modules"]
+
+[default.extend-words]
+divy = "divy"

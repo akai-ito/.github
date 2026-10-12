@@ -1,0 +1,66 @@
+name: Commit messages
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+env:
+  SHARED: ${{ github.repository == 'akai-ito/.github' && '.' || '.shared' }}
+
+jobs:
+  commits:
+    name: Conventional and unattributed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.SHARED == '.shared'
+        with:
+          repository: akai-ito/.github
+          ref: main
+          path: .shared
+      - name: Check every new commit
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: '"$SHARED/.github/scripts/check-commits" "$BASE" "$HEAD"'
+
+  pull-request:
+    name: Pull request title and description
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: akai-ito/.github
+          ref: ${{ github.repository == 'akai-ito/.github' && github.event.pull_request.head.sha || 'main' }}
+          path: .shared
+      - name: Check the title and description
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s\n\n%s\n' "$TITLE" "$BODY" > "$RUNNER_TEMP/pull-request"
+          CHECK_LABEL="Pull request" .shared/.githooks/commit-msg "$RUNNER_TEMP/pull-request"
+
+  hook:
+    name: Hook matches the shared one
+    if: github.repository != 'akai-ito/.github'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: akai-ito/.github
+          ref: main
+          path: .shared
+      - name: Compare .githooks/commit-msg with akai-ito/.github
+        run: |
+          if ! cmp -s .githooks/commit-msg .shared/.githooks/commit-msg; then
+            echo "::error file=.githooks/commit-msg,title=Hook out of date::Copy .githooks/commit-msg from akai-ito/.github so this repository checks commits the same way."
+            exit 1
+          fi
