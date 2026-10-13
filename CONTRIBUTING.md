@@ -39,8 +39,9 @@ on a violation.
   named for what they hold (`Result<Value, Failure>`).
 - **Comments only for a why the code can't carry.** Names and types say what.
 - **Organised by domain.** Folders are domains (`conversation`, `store`, `engine`, `http`); files
-  are kebab-case with named exports only; imports use `#` subpaths (`#store/messages.ts`) and name
-  the file that defines the thing, with no barrel files.
+  are kebab-case with named exports only (a tool's config file keeps the default export its tool
+  expects); imports use `#` subpaths (`#store/messages.ts`) and name the file that defines the
+  thing, with no barrel files.
 - **`async` and `await`.** No `.then` chains or callbacks; `AbortSignal` for timeouts and
   cancellation.
 - **Dependencies earn their place.** Node built-ins first, and a new dependency states its reason in
