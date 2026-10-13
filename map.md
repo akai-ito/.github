@@ -117,8 +117,10 @@ Starting points from earlier design work; each is revisited when the work reache
   running that you'd want to glance at, and a chat reply is over too soon to need one.
 - **Dark-first, native iOS**, with one signature element, the agent's living presence, so the
   agent is the only thing that stands out.
-- **Reaching your server:** Tailscale Funnel, with Cloudflare Tunnel as the fallback, so there's no
-  port forwarding or certificate setup.
+- **Reaching your server:** over your tailnet with `tailscale serve` at first, because a server
+  whose agent can run shell commands shouldn't face the public internet behind a single token.
+  Tailscale Funnel, with Cloudflare Tunnel as the fallback, arrives with pairing and per-device
+  tokens. Neither needs port forwarding or certificate setup.
 - **Getting Ari:** build it yourself first, then TestFlight, then the App Store, so others can use
   it before it's ready for Apple's review.
 - **Your agent reports the problems it hits.** It files issues on Ito's repositories directly,
