@@ -39,13 +39,14 @@ jobs:
           repository: akai-ito/.github
           ref: ${{ github.repository == 'akai-ito/.github' && github.event.pull_request.head.sha || 'main' }}
           path: .shared
-      - name: Check the title and description
+      - name: Check the title and description, as the squash commit will read
         env:
           TITLE: ${{ github.event.pull_request.title }}
+          NUMBER: ${{ github.event.pull_request.number }}
           BODY: ${{ github.event.pull_request.body }}
         run: |
-          printf '%s\n\n%s\n' "$TITLE" "$BODY" > "$RUNNER_TEMP/pull-request"
-          CHECK_LABEL="Pull request" .shared/.githooks/commit-msg "$RUNNER_TEMP/pull-request"
+          printf '%s (#%s)\n\n%s\n' "$TITLE" "$NUMBER" "$BODY" > "$RUNNER_TEMP/pull-request"
+          CHECK_LABEL="Pull request, with the number its squash adds" .shared/.githooks/commit-msg "$RUNNER_TEMP/pull-request"
 
   hook:
     name: Hook matches the shared one
