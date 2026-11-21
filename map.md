@@ -1,8 +1,10 @@
 # Ito — map
 
 > The design map for Ito, a personal agent you run yourself, and Ari, its iPhone app.
-> **Status: designing — nothing is built yet.** Every decision carries its reason. The
-> [organisation page](https://github.com/akai-ito) explains what Ito is and why.
+> **Status: the original design, written before the build.** Most of it is built now; where the
+> code has moved on (capabilities, for one, live in ito-core), the
+> [ito-core README](https://github.com/akai-ito/ito-core#how-it-fits-together) describes what's
+> there. Every decision carries its reason.
 
 ## Words
 
